@@ -1,3 +1,3 @@
 # MusicVisuals
 
-Music Visualization made in Progress
+Music Visualization made in Processing
