@@ -1,54 +1,49 @@
 import ddf.minim.analysis.*;
 import ddf.minim.*;
 
-//som
 Minim minim;
 AudioPlayer track1;
 FFT fft;
 
 float speed;
 int mode;
-
-//universo
-Estrela[] estrelas = new Estrela[400];
-
-//circunferencia principal
-Circle[] circle = new Circle[5];
-
-//botao
-PImage inicio, play1, pause, volume, voltar;
-Button[] buttons = new Button[5];
 boolean hasChosenTrack = false;
 
+Star[] stars = new Star[400];
+Circle[] circle = new Circle[5];
+
+//buttons
+PImage start, play1, pause, volume, back;
+Button[] buttons = new Button[5];
+
 void setup() {
-  
+
   //fullScreen(P3D);
   size(1280, 720, P3D);
   mode=0;
 
-  //botao e imagem
-  inicio = loadImage("play.png");
+  start = loadImage("play.png");
   play1 = loadImage("play1.png");  
   pause = loadImage("pause.png");
   volume = loadImage("vol.png");
-  voltar = loadImage("voltar.png");
-  buttons[0] = new Button(inicio, new PVector(width/2, height/2)); //inicio
-  buttons[1] = new Button(pause, new PVector(30, height-30)); //play/pause
-  buttons[2] = new Button(volume, new PVector(width/2 + 600, height-30)); //volume
-  buttons[3] = new Button(voltar, new PVector(width/2+600, 50)); //volta/encerra visualizacao
+  back = loadImage("voltar.png");
+  buttons[0] = new Button(start, new PVector(width/2, height/2)); 
+  buttons[1] = new Button(pause, new PVector(30, height-30));
+  buttons[2] = new Button(volume, new PVector(width/2 + 600, height-30));
+  buttons[3] = new Button(back, new PVector(width/2+600, 50));
 
-  //som
+  //sound
   minim = new Minim(this);
-  selectInput("Select a file to process:", "finishSetup");
+  selectInput("Select a music fille:", "finishSetup");
   noLoop();
-  //universo
+
+
   smooth();
   stroke(255);
   strokeWeight(5);
-  for (int i=0; i<estrelas.length; i++) {
-    estrelas[i] = new Estrela();
+  for (int i=0; i<stars.length; i++) {
+    stars[i] = new Star();
   }
-
 }
 
 void finishSetup(File selection) {
@@ -57,23 +52,28 @@ void finishSetup(File selection) {
   } else {
     track1 = minim.loadFile(selection.getAbsolutePath());
     fft = new FFT(track1.bufferSize(), track1.sampleRate());
-  //circunferencia central
-  circle[0] = new Circle(200, 200);
-  circle[1] = new Circle(200, (200*-1));
-  circle[2] = new Circle((200*-1), 200);
-  circle[3] = new Circle((200*-1), (200*-1));
-  circle[4] = new Circle((200), (200*-1));
-  hasChosenTrack = true;
-  loop();
+
+    //instantiate the circles, which currently require fft loaded
+    circle[0] = new Circle(200, 200);
+    circle[1] = new Circle(200, (200*-1));
+    circle[2] = new Circle((200*-1), 200);
+    circle[3] = new Circle((200*-1), (200*-1));
+    circle[4] = new Circle((200), (200*-1));
+    hasChosenTrack = true;
+    loop();
   }
 }
 
 void draw() {
-   background(0);
-  if(hasChosenTrack){
+  background(0);
+  if (hasChosenTrack) {
     fft.forward(track1.mix);
 
-    //Inicio
+    //mode 0 : certainly does something
+    //mode 1 : run the visuals and draw buttons
+    //mode 2 : same as mode 0 but calls setup?
+    // DO A SWITCH
+
     if (mode == 0) {
       background(0);
       for (int i = 0; i < buttons.length; i++) {
@@ -81,12 +81,26 @@ void draw() {
       }
     }
 
-    //Tela de reproducao
     if (mode==1) { 
       background(0);
-      visualizador();
+      noStroke();
 
-      //desenha os botoes
+      //calls every draw function of each circle
+      //yeah, more than one
+      for (int i = 0; i < circle.length; i++) {
+        circle[i].desenha1();
+        circle[i].desenha2();
+        circle[i].desenha3();
+        circle[i].desenha4();
+        circle[i].desenha5();
+      }
+
+      // star background
+      for (int i=0; i<stars.length; i++) {
+        stars[i].desenha();
+        stars[i].update();
+      }
+
       for (int i = 0; i < buttons.length; i++) {
         buttons[1].pp(); 
         buttons[2].pp();
@@ -94,7 +108,6 @@ void draw() {
       }
     }
 
-    //Reinicia
     if (mode == 2) {
       background(0);
       setup();
@@ -103,42 +116,23 @@ void draw() {
       }
     }
 
-    //velocidade das estrelas em funcao da frequencia
+    //not sure if this should be here
     for (int i = 0; i< fft.specSize(); i++) {
       speed = fft.getFreq(i);
     }
   }
-
 }
 
-void visualizador() {
-  noStroke();
-  
-  //circunferencia - ellipse central
-  for (int i = 0; i < circle.length; i++) {
-    circle[i].desenha1();
-    circle[i].desenha2();
-    circle[i].desenha3();
-    circle[i].desenha4();
-    circle[i].desenha5();
-  }
-
-  //universo - background
-  for (int i=0; i<estrelas.length; i++) {
-    estrelas[i].desenha();
-    estrelas[i].update();
-  }
-}
 
 void mousePressed() {
-  
-  //tela de inicio desencadeia reproducao
+
+  //play button
   if (buttons[0].containsMouseIn()) {
     track1.play();
     mode=1;
   } 
 
-  //Interacao com o botao play/pause
+  //pause/resume button
   if (buttons[1].containsMousePP() && track1.isPlaying()) { 
     for (int i = 0; i < buttons.length; i++) {
       buttons[1].setImg(play1);
@@ -149,7 +143,7 @@ void mousePressed() {
     track1.play();
   }
 
-  //botao para retornar a tela de inicio e reiniciar reproducao
+  //goes back and choose other music
   if (buttons[3].containsMousePP()) {
     track1.close();
     mode = 2;

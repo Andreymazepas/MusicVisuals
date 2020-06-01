@@ -1,4 +1,4 @@
-class Estrela {
+class Star {
   float x;
   float y;
   float z;
@@ -6,7 +6,7 @@ class Estrela {
   float setY;
   float r;
 
-  Estrela() {
+  Star() {
     x = random(-width, width);
     y = random(-height, height);
     z = random(width);
