@@ -26,11 +26,11 @@ void setup() {
   play1 = loadImage("play1.png");  
   pause = loadImage("pause.png");
   volume = loadImage("vol.png");
-  back = loadImage("voltar.png");
+  exit = loadImage("exit.png");
   buttons[0] = new Button(start, new PVector(width/2, height/2)); 
   buttons[1] = new Button(pause, new PVector(30, height-30));
   buttons[2] = new Button(volume, new PVector(width/2 + 600, height-30));
-  buttons[3] = new Button(back, new PVector(width/2+600, 50));
+  buttons[3] = new Button(exit, new PVector(width/2+600, 50));
 
   //sound
   minim = new Minim(this);
