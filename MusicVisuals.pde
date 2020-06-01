@@ -13,7 +13,7 @@ Star[] stars = new Star[400];
 Circle[] circle = new Circle[5];
 
 //buttons
-PImage start, play1, pause, volume, back;
+PImage start, play1, pause, volume, exit;
 Button[] buttons = new Button[5];
 
 void setup() {
