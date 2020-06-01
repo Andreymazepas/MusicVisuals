@@ -18,8 +18,10 @@ Circle[] circle = new Circle[5];
 //botao
 PImage inicio, play1, pause, volume, voltar;
 Button[] buttons = new Button[5];
+boolean hasChosenTrack = false;
 
 void setup() {
+  
   //fullScreen(P3D);
   size(1280, 720, P3D);
   mode=0;
@@ -37,9 +39,8 @@ void setup() {
 
   //som
   minim = new Minim(this);
-  track1 = minim.loadFile("sky.mp3");
-  fft = new FFT(track1.bufferSize(), track1.sampleRate());
-
+  selectInput("Select a file to process:", "finishSetup");
+  noLoop();
   //universo
   smooth();
   stroke(255);
@@ -48,52 +49,66 @@ void setup() {
     estrelas[i] = new Estrela();
   }
 
+}
+
+void finishSetup(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+  } else {
+    track1 = minim.loadFile(selection.getAbsolutePath());
+    fft = new FFT(track1.bufferSize(), track1.sampleRate());
   //circunferencia central
   circle[0] = new Circle(200, 200);
   circle[1] = new Circle(200, (200*-1));
   circle[2] = new Circle((200*-1), 200);
   circle[3] = new Circle((200*-1), (200*-1));
   circle[4] = new Circle((200), (200*-1));
+  hasChosenTrack = true;
+  loop();
+  }
 }
 
 void draw() {
-  background(0);
-  fft.forward(track1.mix);
+   background(0);
+  if(hasChosenTrack){
+    fft.forward(track1.mix);
 
-  //Inicio
-  if (mode == 0) {
-    background(0);
-    for (int i = 0; i < buttons.length; i++) {
-      buttons[0].inicio();
+    //Inicio
+    if (mode == 0) {
+      background(0);
+      for (int i = 0; i < buttons.length; i++) {
+        buttons[0].inicio();
+      }
+    }
+
+    //Tela de reproducao
+    if (mode==1) { 
+      background(0);
+      visualizador();
+
+      //desenha os botoes
+      for (int i = 0; i < buttons.length; i++) {
+        buttons[1].pp(); 
+        buttons[2].pp();
+        buttons[3].pp();
+      }
+    }
+
+    //Reinicia
+    if (mode == 2) {
+      background(0);
+      setup();
+      for (int i = 0; i < buttons.length; i++) {
+        buttons[0].inicio();
+      }
+    }
+
+    //velocidade das estrelas em funcao da frequencia
+    for (int i = 0; i< fft.specSize(); i++) {
+      speed = fft.getFreq(i);
     }
   }
 
-  //Tela de reproducao
-  if (mode==1) { 
-    background(0);
-    visualizador();
-
-    //desenha os botoes
-    for (int i = 0; i < buttons.length; i++) {
-      buttons[1].pp(); 
-      buttons[2].pp();
-      buttons[3].pp();
-    }
-  }
-
-  //Reinicia
-  if (mode == 2) {
-    background(0);
-    setup();
-    for (int i = 0; i < buttons.length; i++) {
-      buttons[0].inicio();
-    }
-  }
-
-  //velocidade das estrelas em funcao da frequencia
-  for (int i = 0; i< fft.specSize(); i++) {
-    speed = fft.getFreq(i);
-  }
 }
 
 void visualizador() {
