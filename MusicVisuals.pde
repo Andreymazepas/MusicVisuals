@@ -150,6 +150,28 @@ void mousePressed() {
   }
 }
 
+void keyPressed()
+{
+  if (key == ' '){
+    if ( track.isPlaying() )
+    {
+      track.pause();
+    }
+    // if the player is at the end of the file,
+    // we have to rewind it before telling it to play again
+    else if ( track.position() == track.length() )
+    {
+      track.rewind();
+      track.play();
+    }
+    else
+    {
+      track.play();
+    }
+  }
+  
+}
+
 void stop() {
   track.close();
   minim.stop();
