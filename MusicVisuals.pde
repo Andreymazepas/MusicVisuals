@@ -3,6 +3,7 @@ import ddf.minim.analysis.*;
 
 Minim minim;
 AudioPlayer track;
+AudioMetaData meta;
 BeatDetect beat;
 FFT fft;
 
@@ -38,13 +39,14 @@ void setup() {
   selectInput("Select a music file:", "finishSetup");
   noLoop();
 
-
   smooth();
   stroke(255);
   strokeWeight(5);
   for (int i=0; i<stars.length; i++) {
     stars[i] = new Star();
   }
+  textFont(createFont("Serif", 20));
+
 }
 
 void finishSetup(File selection) {
@@ -61,6 +63,7 @@ void finishSetup(File selection) {
       track.close();
     }
     track = minim.loadFile(selection.getAbsolutePath());
+    meta = track.getMetaData();
     fft = new FFT(track.bufferSize(), track.sampleRate());
     beat = new BeatDetect(track.bufferSize(), track.sampleRate());
     beat.setSensitivity(5);  
@@ -77,6 +80,9 @@ void finishSetup(File selection) {
   }
 }
 
+int ys = 25;
+int yi = 20;
+
 void draw() {
   // avoid nullPointerException while the user has not chosen a track yet
   if (hasChosenTrack) { 
@@ -84,6 +90,11 @@ void draw() {
     fft.forward(track.mix);
     beat.detect(track.mix);
     noStroke();
+
+    int y = ys;
+    text(meta.title(), 5, y+=yi);
+    text(meta.album(), 5, y+=yi);
+    text(meta.author(), 5, y+=yi);
 
     for (int i = 0; i < spheres.length; i++) {
       spheres[i].render();
