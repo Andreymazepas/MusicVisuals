@@ -92,9 +92,9 @@ void draw() {
     noStroke();
 
     int y = ys;
-    text(meta.title(), 5, y+=yi);
-    text(meta.album(), 5, y+=yi);
-    text(meta.author(), 5, y+=yi);
+    text(meta.title(), 10, y+=yi);
+    text(meta.album(), 10, y+=yi);
+    text(meta.author(), 10, y+=yi);
 
     stroke( 100, 100 ,100);
     line( width / 2 - 450, height - 20, width / 2 + 450, height - 20 );
@@ -102,6 +102,16 @@ void draw() {
     float position = map( track.position(), 0, track.length(), 0, 900 );
     line( width / 2 - 450, height - 20, width / 2 - 450 + position, height - 20 );
     circle(width / 2 - 450 + position, height - 20, 3);
+    text(
+          nf(((track.position() / 1000)/60),2) + ":" 
+          + nf(((track.position() / 1000) % 60),2),
+          width / 2 - 510,
+          height - 15);
+    text(
+          nf(((track.length() / 1000)/60),2) + ":" 
+          + nf(((track.length() / 1000) % 60), 2),
+          width / 2 + 470, 
+          height - 15);
 
     for (int i = 0; i < spheres.length; i++) {
       spheres[i].render();
@@ -148,6 +158,16 @@ void mousePressed() {
     noLoop();
     selectInput("Select a music file:", "finishSetup");
   }
+
+  // terrible way to check if mouseclick on progressBar
+  if( mouseX > width / 2 - 450  &&
+      mouseX < width / 2 + 450  &&
+      mouseY > height - 25      &&
+      mouseY < height - 15)
+    {
+      int position = int( map( mouseX, width / 2 - 450, width / 2 + 450, 0, track.length() ) );
+      track.cue( position );
+    }
 }
 
 void keyPressed()
