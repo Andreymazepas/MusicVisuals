@@ -96,6 +96,13 @@ void draw() {
     text(meta.album(), 5, y+=yi);
     text(meta.author(), 5, y+=yi);
 
+    stroke( 100, 100 ,100);
+    line( width / 2 - 450, height - 20, width / 2 + 450, height - 20 );
+    stroke( 255, 255, 255);
+    float position = map( track.position(), 0, track.length(), 0, 900 );
+    line( width / 2 - 450, height - 20, width / 2 - 450 + position, height - 20 );
+    circle(width / 2 - 450 + position, height - 20, 3);
+
     for (int i = 0; i < spheres.length; i++) {
       spheres[i].render();
     }
