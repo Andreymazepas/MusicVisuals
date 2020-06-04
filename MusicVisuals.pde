@@ -2,11 +2,10 @@ import ddf.minim.analysis.*;
 import ddf.minim.*;
 
 Minim minim;
-AudioPlayer track1;
+AudioPlayer track;
 FFT fft;
 
 float speed;
-int mode = 0;
 boolean hasChosenTrack = false;
 
 Star[] stars = new Star[400];
@@ -20,6 +19,8 @@ void setup() {
 
   //fullScreen(P3D);
   size(1280, 720, P3D);
+  surface.setTitle("MusicVisuals");
+  surface.setResizable(true);
 
   start = loadImage("play.png");
   play1 = loadImage("play1.png");  
@@ -48,9 +49,18 @@ void setup() {
 void finishSetup(File selection) {
   if (selection == null) {
     println("Window was closed or the user hit cancel.");
+    //keep playing if already has music
+    if(hasChosenTrack)
+    {
+      track.play();
+      loop();
+    }
   } else {
-    track1 = minim.loadFile(selection.getAbsolutePath());
-    fft = new FFT(track1.bufferSize(), track1.sampleRate());
+    if(hasChosenTrack){
+      track.close();
+    }
+    track = minim.loadFile(selection.getAbsolutePath());
+    fft = new FFT(track.bufferSize(), track.sampleRate());
 
     //instantiate the circles, which currently require fft loaded
     spheres[0] = new Sphere(200, 200);
@@ -59,98 +69,68 @@ void finishSetup(File selection) {
     spheres[3] = new Sphere((200*-1), (200*-1));
     spheres[4] = new Sphere((200), (200*-1));
     hasChosenTrack = true;
+    track.play();
     loop();
   }
 }
 
 void draw() {
-  background(0);
-  if (hasChosenTrack) {
-    fft.forward(track1.mix);
+  if (hasChosenTrack) { 
+    background(0);
+    fft.forward(track.mix);
+    noStroke();
 
-    //mode 0 : certainly does something
-    //mode 1 : run the visuals and draw buttons
-    //mode 2 : same as mode 0 but calls setup?
-    // DO A SWITCH
-
-    if (mode == 0) {
-      background(0);
-      for (int i = 0; i < buttons.length; i++) {
-        buttons[0].inicio();
-      }
+    //calls every draw function of each spheres
+    //yeah, more than one
+    for (int i = 0; i < spheres.length; i++) {
+      spheres[i].desenha1();
+      spheres[i].desenha2();
+      spheres[i].desenha3();
+      spheres[i].desenha4();
+      spheres[i].desenha5();
     }
 
-    if (mode==1) { 
-      background(0);
-      noStroke();
-
-      //calls every draw function of each spheres
-      //yeah, more than one
-      for (int i = 0; i < spheres.length; i++) {
-        spheres[i].desenha1();
-        spheres[i].desenha2();
-        spheres[i].desenha3();
-        spheres[i].desenha4();
-        spheres[i].desenha5();
-      }
-
-      // star background
-      for (int i=0; i<stars.length; i++) {
-        stars[i].desenha();
-        stars[i].update();
-      }
-
-      for (int i = 0; i < buttons.length; i++) {
-        buttons[1].pp(); 
-        buttons[2].pp();
-        buttons[3].pp();
-      }
+    // star background
+    for (int i=0; i<stars.length; i++) {
+      stars[i].desenha();
+      stars[i].update();
     }
 
-    if (mode == 2) {
-      background(0);
-      setup();
-      for (int i = 0; i < buttons.length; i++) {
-        buttons[0].inicio();
-      }
+    for (int i = 0; i < buttons.length; i++) {
+      buttons[1].pp(); 
+      buttons[2].pp();
+      buttons[3].pp();
     }
 
-    //not sure if this should be here
     for (int i = 0; i< fft.specSize(); i++) {
-      speed = fft.getFreq(i);
-    }
+    speed = fft.getFreq(i);
   }
+  }
+
 }
 
 
 void mousePressed() {
 
-  //play button
-  if (buttons[0].containsMouseIn()) {
-    track1.play();
-    mode=1;
-  } 
-
   //pause/resume button
-  if (buttons[1].containsMousePP() && track1.isPlaying()) { 
-    for (int i = 0; i < buttons.length; i++) {
-      buttons[1].setImg(play1);
-      track1.pause();
-    }
+  if (buttons[1].containsMousePP() && track.isPlaying()) { 
+    buttons[1].setImg(play1);
+    track.pause();
   } else {
     buttons[1].setImg(pause);
-    track1.play();
+    track.play();
   }
 
   //goes back and choose other music
   if (buttons[3].containsMousePP()) {
-    track1.close();
-    mode = 2;
+    track.close();
+    noLoop();
+    selectInput("Select a music file:", "finishSetup");
   }
 }
 
 void stop() {
-  track1.close();
+  track.close();
   minim.stop();
   super.stop();
 }
