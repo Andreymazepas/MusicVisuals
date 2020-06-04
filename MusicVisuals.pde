@@ -18,35 +18,30 @@ PImage start, play1, pause, volume, exit;
 Button[] buttons = new Button[5];
 
 void setup() {
-
   //fullScreen(P3D);
   size(1280, 720, P3D);
   surface.setTitle("MusicVisuals");
   surface.setResizable(true);
-
+  textFont(createFont("Serif", 20));
+  minim = new Minim(this);
+  
   start = loadImage("play.png");
   play1 = loadImage("play1.png");  
   pause = loadImage("pause.png");
   volume = loadImage("vol.png");
   exit = loadImage("exit.png");
+
   buttons[0] = new Button(start, new PVector(width/2, height/2)); 
   buttons[1] = new Button(pause, new PVector(30, height-30));
   buttons[2] = new Button(volume, new PVector(width/2 + 600, height-30));
   buttons[3] = new Button(exit, new PVector(width/2+600, 50));
 
-  //sound
-  minim = new Minim(this);
-  selectInput("Select a music file:", "finishSetup");
-  noLoop();
-
-  smooth();
-  stroke(255);
-  strokeWeight(5);
   for (int i=0; i<stars.length; i++) {
     stars[i] = new Star();
   }
-  textFont(createFont("Serif", 20));
 
+  noLoop();
+  selectInput("Select a music file:", "finishSetup");  
 }
 
 void finishSetup(File selection) {
@@ -96,37 +91,49 @@ void draw() {
     text(meta.album(), 10, y+=yi);
     text(meta.author(), 10, y+=yi);
 
+    // gray progress line
     stroke( 100, 100 ,100);
     line( width / 2 - 450, height - 20, width / 2 + 450, height - 20 );
+
+    // white elapsed progress line
     stroke( 255, 255, 255);
     float position = map( track.position(), 0, track.length(), 0, 900 );
     line( width / 2 - 450, height - 20, width / 2 - 450 + position, height - 20 );
     circle(width / 2 - 450 + position, height - 20, 3);
+
+    // elapsed time
     text(
-          nf(((track.position() / 1000)/60),2) + ":" 
-          + nf(((track.position() / 1000) % 60),2),
+          miliToMin(track.position()) + ":" 
+          + miliToSeg(track.position()),
           width / 2 - 510,
           height - 15);
+
+    // total time
     text(
-          nf(((track.length() / 1000)/60),2) + ":" 
-          + nf(((track.length() / 1000) % 60), 2),
+          miliToMin(track.length()) + ":" 
+          + miliToSeg(track.length()),
           width / 2 + 470, 
           height - 15);
 
+    // main spheres
     for (int i = 0; i < spheres.length; i++) {
       spheres[i].render();
     }
 
+    // background stars
     for (int i=0; i<stars.length; i++) {
       stars[i].render();
     }
 
+    // pp?
     for (int i = 0; i < buttons.length; i++) {
       buttons[1].pp(); 
       buttons[2].pp();
       buttons[3].pp();
     }
 
+
+    // beat detection to speedup stars
     int lowBand = 5;
     int highBand = 15;
     // at least this many bands must have an onset 
@@ -139,6 +146,14 @@ void draw() {
     }
   }
 
+}
+
+String miliToMin(int mili){
+  return nf(mili/1000 / 60, 2);
+}
+
+String miliToSeg(int mili){
+  return nf(mili/1000 % 60, 2);
 }
 
 
