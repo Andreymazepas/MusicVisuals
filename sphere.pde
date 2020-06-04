@@ -1,4 +1,4 @@
-class Circle {
+class Sphere {
   float[] x,y;
   float[] angle1;
   float[] angle2;
@@ -6,7 +6,7 @@ class Circle {
   float transPos2;
  
 
-  Circle(float transPos, float transPos2) {
+  Sphere(float transPos, float transPos2) {
     angle1 = new float[fft.specSize()];
     angle2 = new float[fft.specSize()];
     x = new float[fft.specSize()];

@@ -6,11 +6,11 @@ AudioPlayer track1;
 FFT fft;
 
 float speed;
-int mode;
+int mode = 0;
 boolean hasChosenTrack = false;
 
 Star[] stars = new Star[400];
-Circle[] circle = new Circle[5];
+Sphere[] spheres = new Sphere[5];
 
 //buttons
 PImage start, play1, pause, volume, exit;
@@ -20,7 +20,6 @@ void setup() {
 
   //fullScreen(P3D);
   size(1280, 720, P3D);
-  mode=0;
 
   start = loadImage("play.png");
   play1 = loadImage("play1.png");  
@@ -34,7 +33,7 @@ void setup() {
 
   //sound
   minim = new Minim(this);
-  selectInput("Select a music fille:", "finishSetup");
+  selectInput("Select a music file:", "finishSetup");
   noLoop();
 
 
@@ -54,11 +53,11 @@ void finishSetup(File selection) {
     fft = new FFT(track1.bufferSize(), track1.sampleRate());
 
     //instantiate the circles, which currently require fft loaded
-    circle[0] = new Circle(200, 200);
-    circle[1] = new Circle(200, (200*-1));
-    circle[2] = new Circle((200*-1), 200);
-    circle[3] = new Circle((200*-1), (200*-1));
-    circle[4] = new Circle((200), (200*-1));
+    spheres[0] = new Sphere(200, 200);
+    spheres[1] = new Sphere(200, (200*-1));
+    spheres[2] = new Sphere((200*-1), 200);
+    spheres[3] = new Sphere((200*-1), (200*-1));
+    spheres[4] = new Sphere((200), (200*-1));
     hasChosenTrack = true;
     loop();
   }
@@ -85,14 +84,14 @@ void draw() {
       background(0);
       noStroke();
 
-      //calls every draw function of each circle
+      //calls every draw function of each spheres
       //yeah, more than one
-      for (int i = 0; i < circle.length; i++) {
-        circle[i].desenha1();
-        circle[i].desenha2();
-        circle[i].desenha3();
-        circle[i].desenha4();
-        circle[i].desenha5();
+      for (int i = 0; i < spheres.length; i++) {
+        spheres[i].desenha1();
+        spheres[i].desenha2();
+        spheres[i].desenha3();
+        spheres[i].desenha4();
+        spheres[i].desenha5();
       }
 
       // star background
