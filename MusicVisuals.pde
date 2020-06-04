@@ -1,8 +1,9 @@
-import ddf.minim.analysis.*;
 import ddf.minim.*;
+import ddf.minim.analysis.*;
 
 Minim minim;
 AudioPlayer track;
+BeatDetect beat;
 FFT fft;
 
 float speed;
@@ -61,6 +62,8 @@ void finishSetup(File selection) {
     }
     track = minim.loadFile(selection.getAbsolutePath());
     fft = new FFT(track.bufferSize(), track.sampleRate());
+    beat = new BeatDetect(track.bufferSize(), track.sampleRate());
+    beat.setSensitivity(5);  
 
     //instantiate the circles, which currently require fft loaded
     spheres[0] = new Sphere(200, 200);
@@ -79,6 +82,7 @@ void draw() {
   if (hasChosenTrack) { 
     background(0);
     fft.forward(track.mix);
+    beat.detect(track.mix);
     noStroke();
 
     for (int i = 0; i < spheres.length; i++) {
@@ -95,9 +99,15 @@ void draw() {
       buttons[3].pp();
     }
 
-    // this is wrong
-    for (int i = 0; i< fft.specSize(); i++) {
-      speed = fft.getFreq(i);
+    int lowBand = 5;
+    int highBand = 15;
+    // at least this many bands must have an onset 
+    // for isRange to return true
+    int numberOfOnsetsThreshold = 4;
+    if (beat.isRange(lowBand, highBand, numberOfOnsetsThreshold)){
+      speed = 50;
+    } else {
+      speed = 20;
     }
   }
 
@@ -117,7 +127,6 @@ void mousePressed() {
 
   //goes back and choose other music
   if (buttons[3].containsMousePP()) {
-    track.close();
     noLoop();
     selectInput("Select a music file:", "finishSetup");
   }
