@@ -75,25 +75,18 @@ void finishSetup(File selection) {
 }
 
 void draw() {
+  // avoid nullPointerException while the user has not chosen a track yet
   if (hasChosenTrack) { 
     background(0);
     fft.forward(track.mix);
     noStroke();
 
-    //calls every draw function of each spheres
-    //yeah, more than one
     for (int i = 0; i < spheres.length; i++) {
-      spheres[i].desenha1();
-      spheres[i].desenha2();
-      spheres[i].desenha3();
-      spheres[i].desenha4();
-      spheres[i].desenha5();
+      spheres[i].render();
     }
 
-    // star background
     for (int i=0; i<stars.length; i++) {
-      stars[i].desenha();
-      stars[i].update();
+      stars[i].render();
     }
 
     for (int i = 0; i < buttons.length; i++) {
@@ -102,9 +95,10 @@ void draw() {
       buttons[3].pp();
     }
 
+    // this is wrong
     for (int i = 0; i< fft.specSize(); i++) {
-    speed = fft.getFreq(i);
-  }
+      speed = fft.getFreq(i);
+    }
   }
 
 }

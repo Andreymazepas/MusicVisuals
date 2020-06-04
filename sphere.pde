@@ -13,11 +13,12 @@ class Sphere {
     y = new float[fft.specSize()];
     this.transPos=transPos;
     this.transPos2=transPos2;
-    
   } 
 
-  void desenha1() {
+  void render() {
     noStroke();
+
+    // 1
     pushMatrix();
     translate(width/2, height/2, 0);
     for (int i = 0; i < fft.specSize(); i++) {
@@ -26,14 +27,13 @@ class Sphere {
       rotateY(cos(angle1[i]/5)/30);
       fill(20, 255-fft.getFreq(i)*2, 255-fft.getBand(i)*5); 
       pushMatrix();
-      translate((x[i]+transPos), (x[i]+transPos2));
-      box(fft.getFreq(i)/50+fft.getFreq(i)/100);
+        translate((x[i]+transPos), (x[i]+transPos2));
+        box(fft.getFreq(i)/50+fft.getFreq(i)/100);
       popMatrix();
     }
     popMatrix();
-  }
-  void desenha2(){
-    noStroke();
+
+    // 2
     pushMatrix();
     translate(width/2, height/2, 0);
     for (int i = 0; i < fft.specSize(); i++) {   
@@ -47,9 +47,8 @@ class Sphere {
       popMatrix();
     }
     popMatrix();
-  }
-  void desenha3(){
-    noStroke();
+
+    // 3
     pushMatrix();
     translate(width/2, height/2, 0);
     for (int i = 0; i < fft.specSize(); i++) {
@@ -63,9 +62,8 @@ class Sphere {
       popMatrix();
     }
     popMatrix();
-  }
-  void desenha4(){
-    noStroke();
+
+    // 4
     pushMatrix();
     translate(width/2, height/2, 0);
     for (int i = 0; i < fft.specSize(); i++) {
@@ -79,10 +77,8 @@ class Sphere {
       popMatrix();
     }
     popMatrix();
-  }
-  
-  void desenha5(){
-     noStroke();
+
+    // 5
     pushMatrix();
     translate(width/2, height/2, 0);
     for (int i = 0; i < fft.specSize(); i++) {
@@ -96,5 +92,5 @@ class Sphere {
       popMatrix();
     }
     popMatrix();
-  } 
+  }
 }

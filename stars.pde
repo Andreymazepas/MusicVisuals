@@ -18,7 +18,8 @@ class Star {
       z=width;
   }
 
-  void desenha() {
+  void render() {
+    update();
     setX = map(x/z, 0, 1, 100, width);
     setY = map(y/z, 0, 1, 100, height);
     r=map(z, 0, width, 5, 1);
