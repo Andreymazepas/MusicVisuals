@@ -125,11 +125,9 @@ void draw() {
       stars[i].render();
     }
 
-    // pp?
-    for (int i = 0; i < buttons.length; i++) {
-      buttons[1].pp(); 
-      buttons[2].pp();
-      buttons[3].pp();
+    // update buttons
+    for (int i = 1; i < 4; i++) {
+      buttons[i].update(); 
     }
 
 
@@ -160,7 +158,7 @@ String miliToSeg(int mili){
 void mousePressed() {
 
   //pause/resume button
-  if (buttons[1].containsMousePP() && track.isPlaying()) { 
+  if (buttons[1].containsMouseIn() && track.isPlaying()) { 
     buttons[1].setImg(play1);
     track.pause();
   } else {
@@ -169,7 +167,7 @@ void mousePressed() {
   }
 
   //goes back and choose other music
-  if (buttons[3].containsMousePP()) {
+  if (buttons[3].containsMouseIn()) {
     noLoop();
     selectInput("Select a music file:", "finishSetup");
   }
