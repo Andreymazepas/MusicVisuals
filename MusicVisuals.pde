@@ -12,10 +12,9 @@ boolean hasChosenTrack = false;
 
 Star[] stars = new Star[400];
 Sphere[] spheres = new Sphere[5];
+PImage playImg, pauseImg, exitImg;
+Button pauseButton, exitButton;
 
-//buttons
-PImage start, play1, pause, volume, exit;
-Button[] buttons = new Button[5];
 
 void setup() {
   //fullScreen(P3D);
@@ -25,16 +24,13 @@ void setup() {
   textFont(createFont("Serif", 20));
   minim = new Minim(this);
   
-  start = loadImage("play.png");
-  play1 = loadImage("play1.png");  
-  pause = loadImage("pause.png");
-  volume = loadImage("vol.png");
-  exit = loadImage("exit.png");
+  playImg = loadImage("play1.png");  
+  pauseImg = loadImage("pause.png");
+  exitImg = loadImage("exit.png");
 
-  buttons[0] = new Button(start, new PVector(width/2, height/2)); 
-  buttons[1] = new Button(pause, new PVector(30, height-30));
-  buttons[2] = new Button(volume, new PVector(width/2 + 600, height-30));
-  buttons[3] = new Button(exit, new PVector(width/2+600, 50));
+  pauseButton = new Button(pauseImg, new PVector(30, height-30));
+  exitButton = new Button(exitImg, new PVector(width/2+600, 50));
+  
 
   for (int i=0; i<stars.length; i++) {
     stars[i] = new Star();
@@ -126,9 +122,8 @@ void draw() {
     }
 
     // update buttons
-    for (int i = 1; i < 4; i++) {
-      buttons[i].update(); 
-    }
+    pauseButton.update();
+    exitButton.update();
 
 
     // beat detection to speedup stars
@@ -158,16 +153,16 @@ String miliToSeg(int mili){
 void mousePressed() {
 
   //pause/resume button
-  if (buttons[1].containsMouseIn() && track.isPlaying()) { 
-    buttons[1].setImg(play1);
+  if (pauseButton.containsMouseIn() && track.isPlaying()) { 
+    pauseButton.setImg(playImg);
     track.pause();
   } else {
-    buttons[1].setImg(pause);
+    pauseButton.setImg(pauseImg);
     track.play();
   }
 
   //goes back and choose other music
-  if (buttons[3].containsMouseIn()) {
+  if (exitButton.containsMouseIn()) {
     noLoop();
     selectInput("Select a music file:", "finishSetup");
   }
