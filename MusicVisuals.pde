@@ -60,11 +60,11 @@ void finishSetup(File selection) {
     beat.setSensitivity(5);  
 
     //instantiate the circles, which currently require fft loaded
-    spheres[0] = new Sphere(200, 200);
-    spheres[1] = new Sphere(200, (200*-1));
-    spheres[2] = new Sphere((200*-1), 200);
-    spheres[3] = new Sphere((200*-1), (200*-1));
-    spheres[4] = new Sphere((200), (200*-1));
+    spheres[0] = new Sphere(150, 150);
+    spheres[1] = new Sphere(150, (150*-1));
+    spheres[2] = new Sphere((150*-1), 150);
+    spheres[3] = new Sphere((150*-1), (150*-1));
+    spheres[4] = new Sphere((150), (150*-1));
     hasChosenTrack = true;
     track.play();
     loop();
