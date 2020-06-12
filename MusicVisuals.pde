@@ -28,7 +28,7 @@ void setup() {
   pauseImg = loadImage("pause.png");
   exitImg = loadImage("exit.png");
 
-  pauseButton = new Button(pauseImg, new PVector(30, height-30));
+  pauseButton = new Button(pauseImg, new PVector(60, height-35));
   exitButton = new Button(exitImg, new PVector(width/2+600, 50));
   
 
