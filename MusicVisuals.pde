@@ -86,6 +86,9 @@ void draw() {
     text(meta.title(), 10, y+=yi);
     text(meta.album(), 10, y+=yi);
     text(meta.author(), 10, y+=yi);
+    text("Band Width: " + fft.getBandWidth() + "Hz" , 10, y+=yi);
+    text("Spectrum Size: " + fft.specSize(), 10, y+=yi);
+    
 
     // gray progress line
     stroke( 100, 100 ,100);
