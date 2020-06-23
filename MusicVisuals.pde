@@ -10,23 +10,34 @@ FFT fft;
 float speed;
 boolean hasChosenTrack = false;
 
-Star[] stars = new Star[400];
-Sphere[] spheres = new Sphere[5];
+Star[] stars;
+Sphere[] spheres;
 PImage playImg, pauseImg, exitImg;
 Button pauseButton, exitButton;
 
+JSONObject config;
+
+void settings() {
+  config = loadJSONObject("config.json");
+  size(config.getInt("screenWidth"), config.getInt("screenHeight"), P3D);
+  if(config.getInt("fullscreen") == 1){
+    fullScreen(P3D);
+  }
+}
 
 void setup() {
-  //fullScreen(P3D);
-  size(1280, 720, P3D);
   surface.setTitle("MusicVisuals");
   surface.setResizable(true);
   textFont(createFont("Serif", 20));
   minim = new Minim(this);
-  
+
   playImg = loadImage("play1.png");  
   pauseImg = loadImage("pause.png");
   exitImg = loadImage("exit.png");
+  int starsAmount = constrain(config.getInt("starsAmount"), 0, 1000);
+  int spheresAmount = constrain(config.getInt("spheresAmount"), 0, 5);
+  stars = new Star[starsAmount];
+  spheres = new Sphere[spheresAmount];
 
   pauseButton = new Button(pauseImg, new PVector(60, height-35));
   exitButton = new Button(exitImg, new PVector(width/2+600, 50));
@@ -60,11 +71,11 @@ void finishSetup(File selection) {
     beat.setSensitivity(5);  
 
     //instantiate the circles, which currently require fft loaded
-    spheres[0] = new Sphere(150, 150);
-    spheres[1] = new Sphere(150, (150*-1));
-    spheres[2] = new Sphere((150*-1), 150);
-    spheres[3] = new Sphere((150*-1), (150*-1));
-    spheres[4] = new Sphere((150), (150*-1));
+    int[] spherecoord1 = {150, 150, -150, -150, 150};
+    int[] spherecoord2 = {150, -150, 150, -150, -150};
+    for (int i = 0; i < config.getInt("spheresAmount"); ++i) {
+      spheres[i] = new Sphere(spherecoord1[i], spherecoord2[i]);
+    }
     hasChosenTrack = true;
     track.play();
     loop();
